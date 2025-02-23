@@ -1,0 +1,51 @@
+use_best_params = false  # Set to true to use best_params.json and false for user defined params
+
+# User defined parameters for each model
+
+[user_param.linear]
+fit_intercept = true
+
+[user_param.lasso]
+alpha = 0.0001
+max_iter = 500
+
+[user_param.decision_tree]
+max_depth = 3
+min_samples_split = 5
+min_samples_leaf = 1
+
+[user_param.random_forest]
+n_estimators = 100
+max_depth = 10
+min_samples_split = 5
+
+[user_param.mlp]
+hidden_layer_sizes = [50, 50]
+activation = "tanh"
+solver = "sgd"
+max_iter = 500
+
+# For hyper_parameter optimization
+
+[models.linear]
+fit_intercept = [true, false]
+
+[models.lasso]
+alpha = [0.0001, 0.001, 0.01, 0.1, 1.0]
+max_iter = [500, 1000]
+
+[models.decision_tree]
+max_depth = [3, 5, 10]
+min_samples_split = [2, 5]
+min_samples_leaf = [1, 2]
+
+[models.random_forest]
+n_estimators = [50, 100, 200]
+max_depth = [10, 20]
+min_samples_split = [2, 5]
+
+[models.mlp]
+hidden_layer_sizes = [[50], [100], [50, 50], [100, 50]]
+activation = ["relu", "tanh"]
+solver = ["adam", "sgd"]
+max_iter = [200, 500, 1000]

@@ -1,0 +1,36 @@
+# General Python ignores
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.DS_Store
+
+# Virtual environments
+venv/
+.env/
+*.venv
+*.env
+
+# Jupyter notebooks & logs
+.ipynb_checkpoints/
+*.log
+
+# Data files
+data/processed/
+*.zip
+*.tar.gz
+
+# Model files
+models/
+*.pkl
+*.h5
+*.onnx
+
+# Results and output files
+results/
+*.png
+*.pdf
+best_params.json
+
+# VS Code settings
+.vscode/

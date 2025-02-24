@@ -11,6 +11,7 @@ import os
 from pathlib import Path
 import toml
 
+
 def hp_optimize(model_type):
     config = toml.load("config.toml")
 
@@ -19,10 +20,10 @@ def hp_optimize(model_type):
     final_df = pd.read_csv(os.path.join(file_path, "final_df.csv"))
 
     # Initialization
-    X = final_df.iloc[:, 3:]  # Features 
-    y = final_df.iloc[:, 2]    # Target 
-    groups = final_df.iloc[:, 0]  # Grouping 
-    suppliers = final_df.iloc[:, 1]  # Supplier 
+    X = final_df.iloc[:, 3:]  # Features
+    y = final_df.iloc[:, 2]  # Target
+    groups = final_df.iloc[:, 0]  # Grouping
+    suppliers = final_df.iloc[:, 1]  # Supplier
 
     # Initialize Leave-One-Group-Out Cross-Validation
     logo = LeaveOneGroupOut()
@@ -34,9 +35,13 @@ def hp_optimize(model_type):
     param_grid = config["models"][model_type]
 
     # Initialize GridSearchCV with Leave-One-Group-Out as the cross-validation strategy
-    grid_search = GridSearchCV(estimator=model, param_grid=param_grid, 
-                            scoring=make_scorer(grid_search_custom_score(suppliers)),
-                            cv=logo, n_jobs=-1)
+    grid_search = GridSearchCV(
+        estimator=model,
+        param_grid=param_grid,
+        scoring=make_scorer(grid_search_custom_score(suppliers)),
+        cv=logo,
+        n_jobs=-1,
+    )
 
     # Fit the model to find the best parameters, passing groups
     grid_search.fit(X, y, groups=groups)
@@ -45,7 +50,7 @@ def hp_optimize(model_type):
     best_params = grid_search.best_params_
 
     # Save the best parameters to JSON
-    best_params_path = os.path.join(base_path, "best_params.json")
+    best_params_path = os.path.join(base_path, "results", "best_params.json")
 
     # Load existing best_params.json if it exists
     if os.path.exists(best_params_path):
@@ -63,20 +68,11 @@ def hp_optimize(model_type):
 
     print(f"Best parameters for {model_type} saved in best_params.json")
 
-    cv_results = grid_search.cv_results_
-    params = cv_results['params']  # List of all parameter combinations
-    mean_scores = cv_results['mean_test_score']  # Mean cross-validation score for each combination
-    std_scores = cv_results['std_test_score']  # Standard deviation of scores for each combination
-
-    # Print all parameter combinations with their corresponding scores
-    for param, mean, std in zip(params, mean_scores, std_scores):
-        print(f"Params: {param}, Mean Score: {mean:.4f}, Std Dev: {std:.4f}")
-
 
 # Custom scorer for GridSearchCV
 def grid_search_custom_score(suppliers):
     def custom_scorer(y_true, y_pred):
         score, _ = custom_score(y_true, y_pred, suppliers)
         return score
-    return custom_scorer
 
+    return custom_scorer

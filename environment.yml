@@ -37,4 +37,5 @@ dependencies:
       - seaborn==0.13.2
       - six==1.17.0
       - threadpoolctl==3.5.0
+      - toml==0.10.2
       - tzdata==2025.1

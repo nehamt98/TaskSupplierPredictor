@@ -1,9 +1,9 @@
-use_best_params = false  # Set to true to use best_params.json and false for user defined params
+use_best_params = true  # Set to true to use best_params.json and false for user defined params
 
 # User defined parameters for each model
 
 [user_param.linear]
-fit_intercept = true
+fit_intercept = false
 
 [user_param.lasso]
 alpha = 0.0001

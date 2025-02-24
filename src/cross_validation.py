@@ -9,40 +9,49 @@ import os
 import toml
 import json
 
-from src.utils import define_model, evaluate_model
+from src.utils import define_model, evaluate_model, save_results
+
 
 def cross_val(model_type):
     config = toml.load("config.toml")
+    base_path = Path().resolve()
 
     # Check if best params should be used
     use_best = config.get("use_best_params", False)
 
     if use_best:
+        best_params_file = os.path.join(base_path, "results", "best_params.json")
+        params_type = "best_params"
         try:
             # Load best_params.json
-            with open("best_params.json", "r") as f:
+            with open(best_params_file, "r") as f:
                 best_params = json.load(f)
             if model_type in best_params:
                 print("Using best parameters from best_params.json")
                 params = best_params[model_type]
             else:
-                print(f"No best parameters found for {model_type}. Train the model with hp_optimize first.")
+                print(
+                    f"No best parameters found for {model_type}. Train the model with hp_optimize first."
+                )
                 return
         except FileNotFoundError:
-            print("best_params.json does not exist. Train the model with hp_optimize first.")
+            print(
+                "best_params.json does not exist. Train the model with hp_optimize first."
+            )
     else:
+        params_type = "user_defined"
         # Load manually defined params from config.toml
         params = config["user_param"][model_type]
         print("Using manually defined parameters from config.toml")
-        
+
     base_path = Path().resolve()
     file_path = os.path.join(base_path, "data", "processed")
     final_df = pd.read_csv(os.path.join(file_path, "final_df.csv"))
 
-    X = final_df.iloc[:, 3:]  # Features 
-    y = final_df.iloc[:, 2]    # Costs
+    X = final_df.iloc[:, 3:]  # Features
+    y = final_df.iloc[:, 2]  # Costs
     groups = final_df.iloc[:, 0]  # Group by Tasks ID
-    suppliers = final_df.iloc[:, 1]  # Supplier 
+    suppliers = final_df.iloc[:, 1]  # Supplier
 
     # Initialize Leave-One-Group-Out Cross-Validation
     logo = LeaveOneGroupOut()
@@ -65,12 +74,12 @@ def cross_val(model_type):
     custom_scores, supplier_names, group_names = zip(*results)
 
     # Create DataFrame for custom scores, suppliers, and group names
-    error_t_loocv = pd.DataFrame({
-        'Group': group_names,
-        'Supplier': supplier_names,
-        'Error': custom_scores
-    })
+    error_t_loocv = pd.DataFrame(
+        {"Group": group_names, "Supplier": supplier_names, "Error": custom_scores}
+    )
 
     # Calculate the RMSE
-    RMSE_loocv = np.sqrt(np.mean(np.array(error_t_loocv['Error'])**2))
+    RMSE_loocv = np.sqrt(np.mean(np.array(error_t_loocv["Error"]) ** 2))
     print(f"RMSE: {RMSE_loocv}")
+
+    save_results(model_type, "cross_validation", params_type, params, RMSE_loocv)

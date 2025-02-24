@@ -1,0 +1,102 @@
+{
+    "linear": {
+        "held_out_validation": {
+            "user_defined": [
+                {
+                    "params": {
+                        "fit_intercept": false
+                    },
+                    "rmse": 0.04780494594734475,
+                    "timestamp": "2025-02-23T23:07:54.807544"
+                },
+                {
+                    "params": {
+                        "fit_intercept": true
+                    },
+                    "rmse": 0.029313366730017536,
+                    "timestamp": "2025-02-23T23:07:07.539802"
+                }
+            ],
+            "best_params": {
+                "params": {
+                    "fit_intercept": true
+                },
+                "rmse": 0.030134187443918464,
+                "timestamp": "2025-02-24T21:21:44.178683"
+            }
+        },
+        "cross_validation": {
+            "best_params": {
+                "params": {
+                    "fit_intercept": true
+                },
+                "rmse": 0.030134187443918464,
+                "timestamp": "2025-02-24T21:23:01.646447"
+            }
+        }
+    },
+    "lasso": {
+        "held_out_validation": {
+            "best_params": {
+                "params": {
+                    "alpha": 0.001,
+                    "max_iter": 500
+                },
+                "rmse": 0.029530686111377432,
+                "timestamp": "2025-02-23T23:14:53.862596"
+            }
+        },
+        "cross_validation": {
+            "best_params": {
+                "params": {
+                    "alpha": 0.001,
+                    "max_iter": 500
+                },
+                "rmse": 0.029616194769237783,
+                "timestamp": "2025-02-24T21:23:28.219403"
+            }
+        }
+    },
+    "decision_tree": {
+        "held_out_validation": {
+            "best_params": {
+                "params": {
+                    "max_depth": 10,
+                    "min_samples_leaf": 1,
+                    "min_samples_split": 2
+                },
+                "rmse": 0.0273595764621053,
+                "timestamp": "2025-02-23T23:17:29.939978"
+            }
+        }
+    },
+    "mlp": {
+        "held_out_validation": {
+            "best_params": {
+                "params": {
+                    "activation": "relu",
+                    "hidden_layer_sizes": [
+                        50
+                    ],
+                    "max_iter": 1000,
+                    "solver": "adam"
+                },
+                "rmse": 0.035782611059518105,
+                "timestamp": "2025-02-23T23:35:25.363424"
+            }
+        }
+    },
+    "random_forest": {
+        "held_out_validation": {
+            "best_params": {
+                "params": {
+                    "max_depth": 10,
+                    "min_samples_split": 5,
+                    "n_estimators": 100
+                },
+                "rmse": 0.02720070273741056,
+                "timestamp": "2025-02-24T08:26:17.152058"
+            }
+        }
+    }
+}

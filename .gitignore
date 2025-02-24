@@ -26,11 +26,5 @@ models/
 *.h5
 *.onnx
 
-# Results and output files
-results/
-*.png
-*.pdf
-best_params.json
-
 # VS Code settings
 .vscode/

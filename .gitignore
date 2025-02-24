@@ -16,7 +16,6 @@ venv/
 *.log
 
 # Data files
-data/processed/
 *.zip
 *.tar.gz
 

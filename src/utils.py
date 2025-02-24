@@ -14,6 +14,17 @@ base_path = Path().resolve()
 
 
 def load_data(path):
+    '''
+    Loads the feature data and target labels from CSV files.
+
+    Args:
+        path (str): The relative path to the directory containing the data files (Either train or test).
+
+    Returns:
+        tuple: A tuple containing two elements:
+            - X (DataFrame): The feature set (data).
+            - y (DataFrame): The target variable (labels).
+    '''
     X = pd.read_csv(
         os.path.join(base_path, "data", "processed", path, "data.csv"), index_col=0
     )
@@ -24,6 +35,19 @@ def load_data(path):
 
 
 def define_model(model_type, **parameters):
+    '''
+    Defines and initializes a machine learning model based on the specified type.
+
+    Args:
+        model_type (str): The type of model to initialize (e.g., "linear", "lasso").
+        **parameters: Hyperparameters to be passed to the model constructor.
+
+    Returns:
+        model: The initialized machine learning model.
+
+    Raises:
+        ValueError: If the model type is unsupported.
+    '''
     models = {
         "linear": LinearRegression,
         "lasso": Lasso,
@@ -41,7 +65,20 @@ def define_model(model_type, **parameters):
 
 
 def custom_score(y_true, y_pred, suppliers):
-    # Custom scoring function to calculate the difference between the minimum actual and minimum predicted values in each group
+    '''
+    A custom scoring function that calculates the difference between the minimum true value 
+    and the minimum predicted value, and returns the corresponding supplier and actual cost.
+
+    Args:
+        y_true (Series): The true values for the target variable.
+        y_pred (Series): The predicted values from the model.
+        suppliers (DataFrame): DataFrame containing supplier information.
+
+    Returns:
+        tuple: A tuple containing:
+            - The difference between the minimum true value and the predicted value.
+            - The supplier corresponding to the minimum predicted value.
+    '''
 
     min_y_true = np.min(y_true)
     min_y_pred_index = np.argmin(y_pred)
@@ -58,7 +95,24 @@ def custom_score(y_true, y_pred, suppliers):
 
 
 def evaluate_model(model, X, y, train_index, test_index, groups, suppliers):
-    # Function to evaluate model and calculate scores for each fold
+    '''
+    Evaluates the model using training and test splits, and calculates a custom score.
+
+    Args:
+        model: The machine learning model to evaluate.
+        X (DataFrame): Features (input data).
+        y (DataFrame): Target variable (labels).
+        train_index (array): Indices for the training set.
+        test_index (array): Indices for the test set.
+        groups (DataFrame): Group information for cross-validation.
+        suppliers (DataFrame): Supplier data used for scoring.
+
+    Returns:
+        tuple: A tuple containing:
+            - The custom score for the test fold.
+            - The corresponding supplier for the predicted minimum value.
+            - The group name for the fold.
+    '''
     # Split the data into training and testing sets
     X_train, X_test = X.iloc[train_index], X.iloc[test_index]
     y_train, y_test = y.iloc[train_index], y.iloc[test_index]
@@ -81,15 +135,19 @@ def evaluate_model(model, X, y, train_index, test_index, groups, suppliers):
 
 
 def save_results(model_name, validation_type, params_type, params, rmse):
-    """
-    Save model results to results.json.
+    '''
+    Saves the model evaluation results (including hyperparameters and RMSE score) to a JSON file.
 
-    :param model_name: str, name of the model (e.g., "linear_regression")
-    :param validation_type: str, "held_out_validation" or "cross_validation"
-    :param params_type: str, "user_defined" or "best_params"
-    :param params: dict, model hyperparameters used
-    :param rmse: float, RMSE score of the model
-    """
+    Args:
+        model_name (str): The name of the model
+        validation_type (str): The type of validation used ("held_out_validation" or "cross_validation").
+        params_type (str): Indicates if the parameters are "user_defined" or "best_params".
+        params (dict): A dictionary of the model's hyperparameters.
+        rmse (float): The RMSE (Root Mean Squared Error) score of the model.
+
+    Returns:
+        None: The results are saved to the `results.json` file.
+    '''
     # Load existing results or create an empty dictionary
     results_dir = os.path.join(base_path, "results")  # Ensure 'results/' exists
     results_path = os.path.join(results_dir, "results.json")  # Path to results.json

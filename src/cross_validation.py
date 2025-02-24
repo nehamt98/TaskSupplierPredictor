@@ -2,7 +2,6 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import LeaveOneGroupOut
-from sklearn.metrics import make_scorer
 from joblib import Parallel, delayed
 from pathlib import Path
 import os
